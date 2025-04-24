@@ -49,8 +49,8 @@ root_log = logging.getLogger()  # Flask的根日志记录器
 root_log.handlers = []
 root_log.setLevel(logging.WARNING)
 
-app = Flask(__name__, 
-    static_folder=root_dir+'/tmp', 
+app = Flask(__name__,
+    static_folder=root_dir+'/tmp',
     static_url_path='/tmp')
 
 app.logger.setLevel(logging.WARNING) 
@@ -114,12 +114,12 @@ def get_params(req):
         # 兼容 zh-cn zh-tw zh-hk
         params['lang']='zh'
     
-    # 角色名 
+    # 角色名
     role = req.args.get("role","").strip() or req.form.get("role",'')
     if role:
         params['role']=role
     
-    # 要克隆的音色文件    
+    # 要克隆的音色文件
     params['reference_audio'] = req.args.get("reference_audio",None) or req.form.get("reference_audio",None)
     encode=req.args.get('encode','') or req.form.get('encode','')
     if  encode=='base64':

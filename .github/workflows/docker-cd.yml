@@ -24,7 +24,7 @@ jobs:
       run: |
         docker build -f ./docker/Dockerfile -t devserver:5000/$APP_NAME:$IMAGE_TAG .
         docker push devserver:5000/$APP_NAME:$IMAGE_TAG
-        echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV 
+        echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
 
     - name: Docker run
       env:
@@ -52,22 +52,22 @@ jobs:
             docker rm ${APP_NAME} || true
           fi
         fi
-        
+
         # 确保容器被完全删除
         if docker ps -a --format '{{.Names}}' | grep -q "^${APP_NAME}$"; then
           echo "Failed to remove existing container. Exiting..."
           exit 1
         fi
-        
+
         echo "Starting new container..."
         docker run -d --restart unless-stopped --name $APP_NAME -p $HTTP_PORT:9233 devserver:5000/$APP_NAME:$IMAGE_TAG
-        
+
         # 验证新容器是否成功启动
         if ! docker ps --format '{{.Names}}' | grep -q "^${APP_NAME}$"; then
           echo "Failed to start new container. Exiting..."
           exit 1
         fi
-        
+
         echo "Container successfully replaced!"
         
         
