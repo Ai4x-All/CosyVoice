@@ -46,8 +46,8 @@ root_log.handlers = []
 root_log.setLevel(logging.WARNING)
 
 app = Flask(__name__,
-    static_folder=root_dir + '/tmp',
-    static_url_path='/tmp')
+            static_folder=root_dir + '/tmp',
+            static_url_path='/tmp')
 
 app.logger.setLevel(logging.WARNING)
 # 创建 RotatingFileHandler 对象，设置写入的文件路径和大小限制
@@ -64,6 +64,7 @@ sft_model = None
 tts_model = None
 
 VOICE_LIST = ['中文女', '中文男', '日语男', '粤语女', '英文女', '英文男', '韩语女']
+
 
 def base64_to_wav(encoded_str, output_path):
     if not encoded_str:
@@ -142,12 +143,12 @@ def batch(tts_type, outname, params):
         ref_audio = f"{tmp_dir}/-refaudio-{time.time()}.wav"
         try:
             subprocess.run(["ffmpeg", "-hide_banner", "-ignore_unknown", "-y", "-i", params['reference_audio'], "-ar", "16000", ref_audio],
-                   stdout=subprocess.PIPE,
-                   stderr=subprocess.PIPE,
-                   encoding="utf-8",
-                   check=True,
-                   text=True,
-                   creationflags=0 if sys.platform != 'win32' else subprocess.CREATE_NO_WINDOW)
+                           stdout=subprocess.PIPE,
+                           stderr=subprocess.PIPE,
+                           encoding="utf-8",
+                           check=True,
+                           text=True,
+                           creationflags=0 if sys.platform != 'win32' else subprocess.CREATE_NO_WINDOW)
         except Exception as e:
             raise Exception(f'处理参考音频失败:{e}')
 

@@ -1,3 +1,4 @@
+# flake8: noqa
 import sys
 sys.path.append('third_party/Matcha-TTS')
 from cosyvoice.cli.cosyvoice import CosyVoice2
