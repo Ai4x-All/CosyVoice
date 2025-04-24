@@ -1,8 +1,8 @@
 import sys
 sys.path.append('third_party/Matcha-TTS')
-from cosyvoice.cli.cosyvoice import CosyVoice, CosyVoice2
+from cosyvoice.cli.cosyvoice import CosyVoice2
 from cosyvoice.utils.file_utils import load_wav
-import torchaudio # type: ignore
+import torchaudio  # type: ignore
 
 cosyvoice = CosyVoice2('pretrained_models/CosyVoice2-0.5B', load_jit=False, load_trt=False, fp16=False, use_flow_cache=False)
 
@@ -33,5 +33,7 @@ def text_generator():
     yield '那份意外的惊喜与深深的祝福'
     yield '让我心中充满了甜蜜的快乐，'
     yield '笑容如花儿般绽放。'
+
+
 for i, j in enumerate(cosyvoice.inference_zero_shot(text_generator(), '希望你以后能够做的比我还好呦。', prompt_speech_16k, stream=False)):
     torchaudio.save('zero_shot_{}.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)

@@ -21,7 +21,7 @@ jobs:
         echo $IMAGE_TAG
     - name: Build and push image
       env:
-        APP_NAME: cosyvoice # 根据你的应用名称修改此处
+        APP_NAME: cosyvoice
       run: |
         docker build -f ./docker/Dockerfile -t devserver:5000/$APP_NAME:$IMAGE_TAG .
         docker push devserver:5000/$APP_NAME:$IMAGE_TAG
