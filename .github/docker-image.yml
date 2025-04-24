@@ -1,0 +1,28 @@
+# 1. workflow的名字, 可以不做修改
+name: Docker Image CI on BJ-DS1
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Generate image tag
+      id: vars
+      run: |
+        echo "IMAGE_TAG=$(date +'%Y%m%d-%H%M%S')-$(echo ${{ github.sha }} | cut -c1-8)" >> $GITHUB_ENV
+        echo $IMAGE_TAG
+    - name: Build and push image
+      env:
+        APP_NAME: cosyvoice # 根据你的应用名称修改此处
+      run: |
+        docker build -f ./docker/Dockerfile -t devserver:5000/$APP_NAME:$IMAGE_TAG .
+        docker push devserver:5000/$APP_NAME:$IMAGE_TAG
+        echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV 

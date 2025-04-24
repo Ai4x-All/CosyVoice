@@ -42,10 +42,12 @@ WORKDIR /workspace
 
 ENV PYTHONPATH="${PYTHONPATH}:/workspace/CosyVoice:/workspace/CosyVoice/third_party/Matcha-TTS"
 
-RUN git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git
+RUN git clone --recursive https://github.com/Ai4x-All/CosyVoice.git
 
 RUN conda activate ${VENV} && conda install -y -c conda-forge pynini==2.1.5
 RUN conda activate ${VENV} && cd CosyVoice && \
     pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com
 
 WORKDIR /workspace/CosyVoice
+
+CMD ["python3", "app.py"]

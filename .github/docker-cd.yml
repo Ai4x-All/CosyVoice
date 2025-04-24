@@ -1,0 +1,73 @@
+name: Docker Run on BJ-DS1 (CD)
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Generate image tag
+      id: vars
+      run: |
+        echo "IMAGE_TAG=$(date +'%Y%m%d-%H%M%S')-$(echo ${{ github.sha }} | cut -c1-8)" >> $GITHUB_ENV
+        echo $IMAGE_TAG
+    - name: Build and push image
+      env:
+        APP_NAME: cosyvoice # 根据你的应用名称修改此处
+      run: |
+        docker build -f ./docker/Dockerfile -t devserver:5000/$APP_NAME:$IMAGE_TAG .
+        docker push devserver:5000/$APP_NAME:$IMAGE_TAG
+        echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV 
+
+    - name: Docker run
+      env:
+        HTTP_PORT: 9233 # 宿主机端口映射
+      run: |
+        # 检查容器是否存在并运行
+        if docker ps -a --format '{{.Names}}' | grep -q "^${APP_NAME}$"; then
+          echo "Stopping existing container ${APP_NAME}..."
+          docker stop ${APP_NAME} || true
+          # 等待容器完全停止，最多等待30秒
+          timeout=30
+          while docker ps --format '{{.Names}}' | grep -q "^${APP_NAME}$" && [ $timeout -gt 0 ]; do
+            echo "Waiting for container to stop... ${timeout}s remaining"
+            sleep 1
+            timeout=$((timeout - 1))
+          done
+          docker kill ${APP_NAME} || true
+
+          # 如果容器仍在运行，强制删除
+          if docker ps --format '{{.Names}}' | grep -q "^${APP_NAME}$"; then
+            echo "Force removing container ${APP_NAME}..."
+            docker rm -f ${APP_NAME} || true
+          else
+            echo "Removing stopped container ${APP_NAME}..."
+            docker rm ${APP_NAME} || true
+          fi
+        fi
+        
+        # 确保容器被完全删除
+        if docker ps -a --format '{{.Names}}' | grep -q "^${APP_NAME}$"; then
+          echo "Failed to remove existing container. Exiting..."
+          exit 1
+        fi
+        
+        echo "Starting new container..."
+        docker run -d --restart unless-stopped --name $APP_NAME -p $HTTP_PORT:9233 devserver:5000/$APP_NAME:$IMAGE_TAG
+        
+        # 验证新容器是否成功启动
+        if ! docker ps --format '{{.Names}}' | grep -q "^${APP_NAME}$"; then
+          echo "Failed to start new container. Exiting..."
+          exit 1
+        fi
+        
+        echo "Container successfully replaced!"
+        
+        
