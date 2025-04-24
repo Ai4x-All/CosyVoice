@@ -25,4 +25,4 @@ jobs:
       run: |
         docker build -f ./docker/Dockerfile -t devserver:5000/$APP_NAME:$IMAGE_TAG .
         docker push devserver:5000/$APP_NAME:$IMAGE_TAG
-        echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV 
+        echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
