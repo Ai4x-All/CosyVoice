@@ -14,10 +14,8 @@ RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list &
 FROM pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime
 ENV DEBIAN_FRONTEND=noninteractive
 
-WORKDIR /opt/CosyVoice
+WORKDIR /opt/CosyVoice/CosyVoice/runtime/python/
 
-COPY --from=builder /opt/CosyVoice/CosyVoice /opt/CosyVoice/CosyVoice
-COPY start.sh /opt/CosyVoice/
-RUN chmod +x /opt/CosyVoice/start.sh
+RUN chmod +x /opt/CosyVoice/CosyVoice/runtime/python/start.sh
 
-CMD ["/opt/CosyVoice/start.sh"]
+CMD ["/opt/CosyVoice/CosyVoice/runtime/python/start.sh"]
