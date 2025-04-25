@@ -8,6 +8,17 @@ jobs:
     runs-on: ubuntu-latest
     environment: Hangzhou18
     steps:
+    - name: Check disk space
+      run: |
+        df -h
+        echo "Available disk space:"
+        df -h / | tail -1 | awk '{print $4}'
+
+    - name: Clean up Docker
+      run: |
+        docker system prune -f
+        docker builder prune -f
+
     - name: Checkout repository
       uses: actions/checkout@v4
 
@@ -28,6 +39,6 @@ jobs:
       env:
         APP_NAME: cosyvoice
       run: |
-        docker build -f ./runtime/python/Dockerfile -t crhz.ai4x.com.cn/$APP_NAME:$IMAGE_TAG .
+        docker build --no-cache -f ./runtime/python/Dockerfile -t crhz.ai4x.com.cn/$APP_NAME:$IMAGE_TAG .
         docker push crhz.ai4x.com.cn/$APP_NAME:$IMAGE_TAG
         echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
