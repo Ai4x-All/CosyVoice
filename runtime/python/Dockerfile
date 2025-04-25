@@ -7,11 +7,7 @@ RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list &
     apt-get update -y && \
     apt-get -y install git unzip git-lfs g++ && \
     git lfs install && \
-    git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git && \
-    cd CosyVoice && \
-    pip3 install -r requirements.txt && \
-    cd runtime/python/grpc && \
-    python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. cosyvoice.proto && \
+    git clone --recursive https://github.com/Ai4x-All/CosyVoice.git && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -21,5 +17,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /opt/CosyVoice
 
 COPY --from=builder /opt/CosyVoice/CosyVoice /opt/CosyVoice/CosyVoice
+COPY start.sh /opt/CosyVoice/
+RUN chmod +x /opt/CosyVoice/start.sh
 
-CMD ["python3", "app.py"]
+CMD ["/opt/CosyVoice/start.sh"]
