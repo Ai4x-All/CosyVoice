@@ -4,7 +4,8 @@ on: workflow_dispatch
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    environment: Hangzhou18
 
     steps:
     - name: Checkout repository
@@ -18,12 +19,17 @@ jobs:
       run: |
         echo "IMAGE_TAG=$(date +'%Y%m%d-%H%M%S')-$(echo ${{ github.sha }} | cut -c1-8)" >> $GITHUB_ENV
         echo $IMAGE_TAG
+
+    - name: Login to Docker Registry
+      run: |
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login crhz.ai4x.com.cn -u ${{ vars.DOCKER_USER }} --password-stdin
+
     - name: Build and push image
       env:
-        APP_NAME: cosyvoice # 根据你的应用名称修改此处
+        APP_NAME: cosyvoice 
       run: |
-        docker build -f ./docker/Dockerfile -t devserver:5000/$APP_NAME:$IMAGE_TAG .
-        docker push devserver:5000/$APP_NAME:$IMAGE_TAG
+        docker build -f ./docker/Dockerfile -t crhz.ai4x.com.cn/$APP_NAME:$IMAGE_TAG .
+        docker push crhz.ai4x.com.cn/$APP_NAME:$IMAGE_TAG
         echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
 
     - name: Docker run
@@ -60,7 +66,7 @@ jobs:
         fi
 
         echo "Starting new container..."
-        docker run -d --restart unless-stopped --name $APP_NAME -p $HTTP_PORT:9233 devserver:5000/$APP_NAME:$IMAGE_TAG
+        docker run -d --restart unless-stopped --name $APP_NAME -p $HTTP_PORT:9233 crhz.ai4x.com.cn/$APP_NAME:$IMAGE_TAG
 
         # 验证新容器是否成功启动
         if ! docker ps --format '{{.Names}}' | grep -q "^${APP_NAME}$"; then
