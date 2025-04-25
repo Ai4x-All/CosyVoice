@@ -5,7 +5,7 @@ cd ../..
 
 # 安装依赖
 echo "Installing Python dependencies..."
-pip3 install -r requirements.txt
+pip3 install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com
 cd runtime/python/grpc
 python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. cosyvoice.proto
 cd ../../..
