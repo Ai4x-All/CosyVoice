@@ -26,7 +26,7 @@ jobs:
 
     - name: Build and push image
       env:
-        APP_NAME: cosyvoice 
+        APP_NAME: cosyvoice
       run: |
         docker build -f ./docker/Dockerfile -t crhz.ai4x.com.cn/$APP_NAME:$IMAGE_TAG .
         docker push crhz.ai4x.com.cn/$APP_NAME:$IMAGE_TAG
