@@ -11,9 +11,6 @@ RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list &
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-FROM pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime
-ENV DEBIAN_FRONTEND=noninteractive
-
 WORKDIR /opt/CosyVoice/CosyVoice/runtime/python/
 
 RUN chmod +x /opt/CosyVoice/CosyVoice/runtime/python/start.sh
