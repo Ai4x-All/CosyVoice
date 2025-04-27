@@ -12,4 +12,4 @@ RUN git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git
 RUN cd CosyVoice && pip3 install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com
 RUN cd CosyVoice/runtime/python/grpc && python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. cosyvoice.proto
 WORKDIR /opt/CosyVoice/CosyVoice
-CMD ["python3", "api.py"]
+# CMD ["python3", "api.py"]
